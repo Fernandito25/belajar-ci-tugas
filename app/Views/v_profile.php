@@ -1,47 +1,77 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
-<div class="tab-pane fade show active profile-overview" id="profile-overview">
-   <h5 class="card-title">About</h5>
-   <p class="small fst-italic">Hi! Saya Fernandito Ibrahim Mrayana, mahasiswa Teknik Informatika semester 4 di Universitas Dian Nuswantoro. 
-
-   </p>
-
-   <h5 class="card-title">Profile Details</h5>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label ">Full Name</div>
-      <div class="col-lg-9 col-md-8">Fernandito Ibrahim Maryana</div>
-   </div>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label">Company</div>
-      <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
-   </div>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label">Job</div>
-      <div class="col-lg-9 col-md-8">Web Designer</div>
-   </div>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label">Country</div>
-      <div class="col-lg-9 col-md-8">USA</div>
-   </div>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label">Address</div>
-      <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
-   </div>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label">Phone</div>
-      <div class="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
-   </div>
-
-   <div class="row">
-      <div class="col-lg-3 col-md-4 label">Email</div>
-      <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
-   </div>
-
+History Transaksi Pembelian <strong><?= $username ?></strong>
+<hr>
+<div class="table-responsive">
+    <!-- Table with stripped rows -->
+    <table class="table datatable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ID Pembelian</th>
+                <th scope="col">Waktu Pembelian</th>
+                <th scope="col">Total Bayar</th>
+                <th scope="col">Alamat</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if (!empty($buy)) :
+                foreach ($buy as $index => $item) :
+            ?>
+                    <tr>
+                        <th scope="row"><?php echo $index + 1 ?></th>
+                        <td><?php echo $item['id'] ?></td>
+                        <td><?php echo $item['created_at'] ?></td>
+                        <td><?php echo number_to_currency($item['total_harga'], 'IDR') ?></td>
+                        <td><?php echo $item['alamat'] ?></td>
+                        <td><?php echo ($item['status'] == "1") ? "Sudah Selesai" : "Belum Selesai" ?></td>
+                        <td>
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#detailModal-<?= $item['id'] ?>">
+                                Detail
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Detail Modal Begin -->
+                    <div class="modal fade" id="detailModal-<?= $item['id'] ?>" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Detail Data</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <?php 
+                                    if(!empty($product)){
+	                                    foreach ($product[$item['id']] as $index2 => $item2) : ?>
+	                                        <?php echo $index2 + 1 . ")" ?>
+	                                        <?php if ($item2['foto'] != '' and file_exists("img/" . $item2['foto'] . "")) : ?>
+	                                            <img src="<?php echo base_url() . "img/" . $item2['foto'] ?>" width="100px">
+	                                        <?php endif; ?>
+	                                        <strong><?= $item2['nama'] ?></strong>
+	                                        <?= number_to_currency($item2['harga'], 'IDR') ?>
+	                                        <br>
+	                                        <?= "(" . $item2['jumlah'] . " pcs)" ?><br>
+	                                        <?= number_to_currency($item2['subtotal_harga'], 'IDR') ?>
+	                                        <hr>
+	                                    <?php 
+	                                    endforeach; 
+                                    }
+                                    ?>
+                                    Ongkir <?= number_to_currency($item['ongkir'], 'IDR') ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Detail Modal End -->
+            <?php
+                endforeach;
+            endif;
+            ?>
+        </tbody>
+    </table>
+    <!-- End Table with stripped rows -->
 </div>
 <?= $this->endSection() ?>

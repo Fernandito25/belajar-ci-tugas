@@ -11,8 +11,8 @@ class TransaksiController extends BaseController
     protected $cart;
     protected $client;
     protected $apikey;
-    protected $TransactionModel;
-    protected $TransactionDetailModel;
+    protected $transaction;
+    protected $transaction_detail;
 
 
     function __construct()
